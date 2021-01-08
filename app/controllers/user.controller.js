@@ -78,18 +78,3 @@ exports.subscribeToStore = (req, res) => {
     });
 };
 
-exports.adminBoard = (req, res) => {
-  res.status(200).send("Admin Content.");
-};
-
-exports.supportBoard = (req, res) => {
-  res.status(200).send("Support Content.");
-};
-
-exports.managerBoard = (req, res) => {
-  res.status(200).send("Manager Content.");
-};
-
-exports.subAdminBoard = (req, res) => {
-  res.status(200).send("Sub Admin Content.");
-};
