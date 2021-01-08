@@ -22,28 +22,4 @@ module.exports = function(app) {
     [authJwt.verifyToken, authJwt.isUser],
     controller.subscribeToStore
   );
-
-  app.get(
-    "/api/test/manager",
-    [authJwt.verifyToken, authJwt.isManager],
-    controller.managerBoard
-  );
-
-  app.get(
-    "/api/test/sub-admin",
-    [authJwt.verifyToken, authJwt.isSubAdmin],
-    controller.subAdminBoard
-  );
-
-  app.get(
-    "/api/test/support",
-    [authJwt.verifyToken, authJwt.isSupport],
-    controller.supportBoard
-  );
-
-  app.get(
-    "/api/test/admin",
-    [authJwt.verifyToken, authJwt.isAdmin],
-    controller.adminBoard
-  );
 };
