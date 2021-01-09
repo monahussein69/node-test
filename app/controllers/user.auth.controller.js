@@ -26,12 +26,23 @@ exports.signup = (req, res) => {
             expiresIn: 86400 // 24 hours
           });
 
-          res.send({
-            id: user.id,
-            username: user.username,
-            email: user.email,
-            role: role.name,
-            accessToken: token
+          user.getRole().then(role => {
+            var stores = [];
+            user.getAdmins().then(admins => {
+              for (let i = 0; i < admins.length; i++) {
+                stores.push(admins[i].username.toUpperCase());
+              }
+              res.status(200).send({
+                user: {
+                  id: user.id,
+                  username: user.username,
+                  email: user.email,
+                  role: role.name,
+                  accessToken: token,
+                  stores: stores
+                }
+              });
+            });
           });
         })
         .catch(err => {
@@ -70,13 +81,22 @@ exports.signin = (req, res) => {
         expiresIn: 86400 // 24 hours
       });
 
+      var stores = [];
       user.getRole().then(role => {
-        res.status(200).send({
-          id: user.id,
-          username: user.username,
-          email: user.email,
-          role: role.name,
-          accessToken: token
+        user.getAdmins().then(admins => {
+          for (let i = 0; i < admins.length; i++) {
+            stores.push(admins[i].username.toUpperCase());
+          }
+          res.status(200).send({
+            user: {
+              id: user.id,
+              username: user.username,
+              email: user.email,
+              role: role.name,
+              accessToken: token,
+              stores: stores
+            }
+          });
         });
       });
     })

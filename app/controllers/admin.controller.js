@@ -4,12 +4,42 @@ const Role = db.role;
 
 var bcrypt = require("bcryptjs");
 
+const Op = db.Sequelize.Op;
+
 exports.adminInfo = (req, res) => {
   Admin.findByPk(req.userId).then(user => {
     res.status(200).send({
-      id: user.id,
-      username: user.username,
-      email: user.email
+      user: {
+        id: user.id,
+        username: user.username,
+        email: user.email
+      }
+    });
+  });
+};
+
+exports.getRoles = (req, res) => {
+  Role.findAll({
+    where: {
+      name: {
+        [Op.notIn]: ["admin", "user"]
+      }
+    }
+  }).then(roles => {
+    res.status(200).send({
+      roles: roles
+    });
+  });
+};
+
+exports.getAdmins = (req, res) => {
+  Admin.findAll({
+    where: {
+      roleId: 3
+    }
+  }).then(admins => {
+    res.status(200).send({
+      admins: admins
     });
   });
 };
@@ -32,11 +62,9 @@ exports.addAdminHelps = (req, res) => {
             roleId: role.id,
             adminId: user.id
           })
-            .then(adminHelper => {
+            .then(() => {
               res.status(200).send({
-                id: adminHelper.id,
-                username: adminHelper.username,
-                email: adminHelper.email
+                message: "admin helper added successfully"
               });
             })
             .catch(err => {
@@ -70,7 +98,9 @@ exports.getAdminUsers = (req, res) => {
         });
       } else {
         admin.getUsers().then(users => {
-          res.status(200).send(users);
+          res.status(200).send({
+            users: users
+          });
         });
       }
     })

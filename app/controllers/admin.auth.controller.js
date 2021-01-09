@@ -8,47 +8,42 @@ var bcrypt = require("bcryptjs");
 
 exports.signup = (req, res) => {
   // Save User to Database
-
-  if (req.body.role) {
-    Role.findOne({
-      where: {
-        name: req.body.role
-      }
-    })
-      .then(role => {
-        Admin.create({
-          username: req.body.username,
-          email: req.body.email,
-          password: bcrypt.hashSync(req.body.password, 8),
-          roleId: role.id
-        })
-          .then(admin => {
-            var token = jwt.sign(
-              { id: admin.id, type: "admin" },
-              config.secret,
-              {
-                expiresIn: 86400 // 24 hours
-              }
-            );
-
-            res.send({
-              id: admin.id,
-              username: admin.username,
-              email: admin.email,
-              role: role.name,
-              accessToken: token
-            });
-          })
-          .catch(err => {
-            res.status(500).send({ message: err.message });
-          });
+  Role.findOne({
+    where: {
+      name: "admin"
+    }
+  })
+    .then(role => {
+      Admin.create({
+        username: req.body.username,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 8),
+        roleId: role.id
       })
-      .catch(err => {
-        res.status(500).send({ message: err.message });
-      });
-  } else {
-    res.status(500).send({ message: "you have to add role" });
-  }
+        .then(admin => {
+          var token = jwt.sign({ id: admin.id, type: "admin" }, config.secret, {
+            expiresIn: 86400 // 24 hours
+          });
+
+          admin.getRole().then(role => {
+            res.status(200).send({
+              user: {
+                id: admin.id,
+                username: admin.username,
+                email: admin.email,
+                role: role.name,
+                accessToken: token
+              }
+            });
+          });
+        })
+        .catch(err => {
+          res.status(500).send({ message: err.message });
+        });
+    })
+    .catch(err => {
+      res.status(500).send({ message: err.message });
+    });
 };
 
 exports.signin = (req, res) => {
@@ -80,11 +75,13 @@ exports.signin = (req, res) => {
 
       admin.getRole().then(role => {
         res.status(200).send({
-          id: admin.id,
-          username: admin.username,
-          email: admin.email,
-          role: role.name,
-          accessToken: token
+          user: {
+            id: admin.id,
+            username: admin.username,
+            email: admin.email,
+            role: role.name,
+            accessToken: token
+          }
         });
       });
     })

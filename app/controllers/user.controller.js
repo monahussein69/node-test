@@ -9,9 +9,11 @@ exports.userInfo = (req, res) => {
   User.findByPk(req.userId)
     .then(user => {
       res.status(200).send({
-        id: user.id,
-        username: user.username,
-        email: user.email
+        user: {
+          id: user.id,
+          username: user.username,
+          email: user.email
+        }
       });
     })
     .catch(err => {
@@ -22,7 +24,8 @@ exports.userInfo = (req, res) => {
 exports.subscribeToStore = (req, res) => {
   User.findByPk(req.userId)
     .then(user => {
-      if (req.body.stores) {
+      if (req.body.stores && req.body.stores.length) {
+        var stores_ids = req.body.stores.map(store => store.id);
         Role.findOne({
           where: {
             name: "admin"
@@ -32,7 +35,7 @@ exports.subscribeToStore = (req, res) => {
             Admin.findAll({
               where: {
                 id: {
-                  [Op.and]: req.body.stores
+                  [Op.and]: stores_ids
                 },
                 roleId: role.id
               }
@@ -70,7 +73,7 @@ exports.subscribeToStore = (req, res) => {
             res.status(500).send({ message: err.message });
           });
       } else {
-        res.status(500).send({ message: "You to add at least one store" });
+        res.status(500).send({ message: "You have to add at least one store" });
       }
     })
     .catch(err => {

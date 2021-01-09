@@ -23,6 +23,10 @@ module.exports = function(app) {
     controller.getAdminUsers
   );
 
+  app.get("/api/admin/getRoles", controller.getRoles);
+
+  app.get("/api/admin/getAdmins", controller.getAdmins);
+
   app.post(
     "/api/admin/addAdminHelps",
     [
