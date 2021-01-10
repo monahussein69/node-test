@@ -1,46 +1,61 @@
+## Requirements
 
-### Set port
-.env
-```
-PORT=8081
-```
+For development, you will only need Node.js and a node global package, Yarn, installed in your environement.
 
-## Note:
-Open `src/services/auth-header.js` and modify `return` statement for appropriate back-end (found in the tutorial).
+### Node
+- #### Node installation on Windows
 
-```js
-export default function authHeader() {
-  const user = JSON.parse(localStorage.getItem('user'));
+  Just go on [official Node.js website](https://nodejs.org/) and download the installer.
+Also, be sure to have `git` available in your PATH, `npm` might need it (You can find git [here](https://git-scm.com/)).
 
-  if (user && user.accessToken) {
-    // return { Authorization: 'Bearer ' + user.accessToken }; // for Spring Boot back-end
-    return { 'x-access-token': user.accessToken };             // for Node.js Express back-end
-  } else {
-    return {};
-  }
-}
-```
+- #### Node installation on Ubuntu
 
-## Project setup
+  You can install nodejs and npm easily with apt install, just run the following commands.
 
-In the project directory, you can run:
+      $ sudo apt install nodejs
+      $ sudo apt install npm
 
-```
-npm install
-# or
-yarn install
-```
+- #### Other Operating Systems
+  You can find more information about the installation on the [official Node.js website](https://nodejs.org/) and the [official NPM website](https://npmjs.org/).
 
-or
+If the installation was successful, you should be able to run the following command.
 
-### Compiles and hot-reloads for development
+    $ node --version
+    v8.11.3
 
-```
-npm start
-# or
-yarn start
-```
+    $ npm --version
+    6.1.0
 
-Open [http://localhost:8081](http://localhost:8081) to view it in the browser.
+If you need to update `npm`, you can make it using `npm`! Cool right? After running the following command, just open again the command line and be happy.
 
-The page will reload if you make edits.
+    $ npm install npm -g
+
+###
+### Yarn installation
+  After installing node, this project will need yarn too, so just run the following command.
+
+      $ npm install -g yarn
+
+---
+
+## Install
+
+    $ git clone https://github.com/YOUR_USERNAME/PROJECT_TITLE
+    $ cd PROJECT_TITLE
+    $ yarn install
+
+## Configure app
+
+Open `a/nice/path/to/a.file` then edit it with your settings. You will need:
+
+- A setting;
+- Another setting;
+- One more setting;
+
+## Running the project
+
+    $ yarn start
+
+## Simple build for production
+
+    $ yarn build
