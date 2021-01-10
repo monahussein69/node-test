@@ -85,7 +85,6 @@ exports.addAdminHelps = (req, res) => {
 exports.getAdminUsers = (req, res) => {
   Admin.findByPk(req.userId)
     .then(admin => {
-      console.log(admin.adminId);
       if (admin.adminId) {
         Admin.findOne({
           where: {
@@ -93,7 +92,7 @@ exports.getAdminUsers = (req, res) => {
           }
         }).then(adminForHelper => {
           adminForHelper.getUsers().then(users => {
-            res.status(200).send(users);
+            res.status(200).send({ users: users });
           });
         });
       } else {

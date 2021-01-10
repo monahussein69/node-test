@@ -35,7 +35,6 @@ isUser = (req, res, next) => {
   User.findByPk(req.userId)
     .then(user => {
       user.getRole().then(role => {
-        console.log(role);
         if (role.name === "user") {
           next();
           return;

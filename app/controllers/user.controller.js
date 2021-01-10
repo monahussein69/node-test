@@ -8,12 +8,19 @@ const Op = db.Sequelize.Op;
 exports.userInfo = (req, res) => {
   User.findByPk(req.userId)
     .then(user => {
-      res.status(200).send({
-        user: {
-          id: user.id,
-          username: user.username,
-          email: user.email
+      var stores = [];
+      user.getAdmins().then(admins => {
+        for (let i = 0; i < admins.length; i++) {
+          stores.push(admins[i].username.toUpperCase());
         }
+        res.status(200).send({
+          user: {
+            id: user.id,
+            username: user.username,
+            email: user.email,
+            stores: stores
+          }
+        });
       });
     })
     .catch(err => {
@@ -22,6 +29,7 @@ exports.userInfo = (req, res) => {
 };
 
 exports.subscribeToStore = (req, res) => {
+  let token = req.headers["x-access-token"];
   User.findByPk(req.userId)
     .then(user => {
       if (req.body.stores && req.body.stores.length) {
@@ -35,7 +43,7 @@ exports.subscribeToStore = (req, res) => {
             Admin.findAll({
               where: {
                 id: {
-                  [Op.and]: stores_ids
+                  [Op.in]: stores_ids
                 },
                 roleId: role.id
               }
@@ -51,9 +59,24 @@ exports.subscribeToStore = (req, res) => {
                       user
                         .addAdmins(stores)
                         .then(() => {
-                          res.status(200).send({
-                            message:
-                              "User was subscribe to stores successfully!"
+                          var stores = [];
+                          user.getAdmins().then(admins => {
+                            for (let i = 0; i < admins.length; i++) {
+                              stores.push(admins[i].username.toUpperCase());
+                            }
+
+                            res.status(200).send({
+                              message:
+                                "User was subscribe to stores successfully!",
+                              user: {
+                                id: user.id,
+                                username: user.username,
+                                email: user.email,
+                                role: "user",
+                                accessToken: token,
+                                stores: stores
+                              }
+                            });
                           });
                         })
                         .catch(err => {
